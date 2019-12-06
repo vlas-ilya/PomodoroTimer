@@ -1,6 +1,6 @@
 const path = require('path');
 
-
+// Перевести на babel-node
 module.exports = {
   mode: 'production',
   target: 'node',

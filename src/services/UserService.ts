@@ -1,9 +1,11 @@
+// @ts-ignore
+import { ContextMessageUpdate } from 'telegraf';
 import User from '../classes/User';
 
 export default class UserService {
   private users: any = {};
 
-  public get(ctx: any): User {
+  public get(ctx: ContextMessageUpdate): User {
     if (this.users[ctx.message.from.id]) {
       const user = this.users[ctx.message.from.id];
       user.ctx = user.ctx || ctx;

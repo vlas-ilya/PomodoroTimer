@@ -8,7 +8,7 @@
     "run": "node dist/bundle.js",
     "tar": "tar -cf pomodoro-timer.tar ./src Dockerfile package-lock.json package.json tsconfig.json webpack.config.js",
     "prettier": "prettier --write './src/**/*.ts'",
-    "tslint": "tslint --fix ',./src/**/*.ts'"
+    "tslint": "tslint --fix './src/**/*.ts'"
   },
   "author": "",
   "license": "ISC",
