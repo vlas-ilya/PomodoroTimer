@@ -1,28 +1,32 @@
 {
   "name": "pomodoro-timer",
   "version": "1.0.0",
-  "description": "telegram pomodoro timer",
-  "main": "src/index.ts",
+  "description": "Pomodoro timer for telegram",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "webpack",
-    "run": "node dist/bundle.js",
-    "tar": "tar -cf pomodoro-timer.tar ./src Dockerfile package-lock.json package.json tsconfig.json webpack.config.js",
+    "build": "babel src --out-dir dist --extensions '.ts' --source-maps inline",
+    "run": "node dist/index.js",
+    "tar": "tar -cf pomodoro-timer.tar ./dist",
     "prettier": "prettier --write './src/**/*.ts'",
     "tslint": "tslint --fix './src/**/*.ts'"
   },
-  "author": "",
+  "author": "vlas-ilya",
   "license": "ISC",
   "dependencies": {
     "telegraf": "3.34.1"
   },
   "devDependencies": {
+    "@babel/cli": "7.7.4",
+    "@babel/core": "7.7.4",
+    "@babel/node": "7.7.4",
+    "@babel/plugin-proposal-class-properties": "7.7.4",
+    "@babel/plugin-proposal-numeric-separator": "7.7.4",
+    "@babel/plugin-proposal-object-rest-spread": "7.7.4",
+    "@babel/preset-env": "7.7.4",
+    "@babel/preset-typescript": "7.7.4",
     "prettier": "1.19.1",
-    "prettier-tslint": "0.4.2",
-    "ts-loader": "6.2.1",
     "tslint": "5.20.1",
     "tslint-config-prettier": "1.18.0",
-    "typescript": "3.7.3",
-    "webpack": "4.41.2",
-    "webpack-cli": "3.3.10"
+    "typescript": "3.7.3"
   }
 }
