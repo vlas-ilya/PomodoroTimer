@@ -17,7 +17,7 @@ export default class PomodoroTimer {
   constructor(
     json: any,
     public onTick?: (treeItem: TreeLeaf) => void,
-    public onEndTick?: (treeItem: TreeLeaf) => void,
+    public onEndTick?: (treeItem: TreeLeaf, automaticTick: boolean) => void,
     public onStart?: () => void,
     public onDone?: () => void,
   ) {
@@ -44,7 +44,10 @@ export default class PomodoroTimer {
       sendMessage(executed.stopTickLabel);
     }
 
-    this.stop();
+    if (this.isRunning()) {
+      this.stop();
+    }
+
     this.startTimeout(changeExecuted(this.tree));
   }
 
@@ -85,7 +88,7 @@ export default class PomodoroTimer {
 
     this.timeout = setTimeout(() => {
       if (this.onEndTick) {
-        this.onEndTick(treeItem);
+        this.onEndTick(treeItem, this.automaticTick);
       }
       if (this.automaticTick) {
         this.startTimeout(changeExecuted(this.tree));
