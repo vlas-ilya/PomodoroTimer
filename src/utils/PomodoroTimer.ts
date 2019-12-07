@@ -1,11 +1,11 @@
 import Tree from '../classes/Tree';
 import TreeLeaf from '../classes/TreeLeaf';
-import changeExecuted from '../utils/changeExecuted';
-import clearExecuted from '../utils/clearExecuted';
-import createTree from '../utils/createTree';
-import declOfNum from '../utils/declOfNum';
-import getExecuted from '../utils/getExecuted';
-import setExecuted from '../utils/setExecuted';
+import changeExecuted from './changeExecuted';
+import clearExecuted from './clearExecuted';
+import createTree from './createTree';
+import declOfNum from './declOfNum';
+import getExecuted from './getExecuted';
+import setExecuted from './setExecuted';
 
 export default class PomodoroTimer {
   public automaticTick: boolean = false;

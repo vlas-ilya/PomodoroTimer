@@ -1,5 +1,5 @@
 import User from '../classes/User';
-import PomodoroTimer from './PomodoroTimer';
+import PomodoroTimer from '../utils/PomodoroTimer';
 
 export default class UserService {
   private users: Map<string, User> = new Map<string, User>();

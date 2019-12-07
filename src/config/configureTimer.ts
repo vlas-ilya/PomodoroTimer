@@ -1,6 +1,6 @@
-import PomodoroTimer from '../services/PomodoroTimer';
+import PomodoroTimer from '../utils/PomodoroTimer';
 
-export default function configurePomodoroTimer(
+export default function configureTimer(
   json: any,
   sendMessage: (message: string) => void,
 ): PomodoroTimer {

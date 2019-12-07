@@ -1,11 +1,11 @@
 import User from '../classes/User';
-import configurePomodoroTimer from '../config/configurePomodoroTimer';
-import settings from '../config/defaultPomodoroTimerSettings';
+import configureTimer from '../config/configureTimer';
+import settings from '../config/timers';
 
 export default abstract class BaseController {
   private defaultTimerSettings: any = settings.get('default');
 
-  constructor() {
+  protected constructor() {
     this.onStart = this.onStart.bind(this);
     this.onRun = this.onRun.bind(this);
     this.onStop = this.onStop.bind(this);
@@ -15,24 +15,21 @@ export default abstract class BaseController {
     this.onSetAutomaticTick = this.onSetAutomaticTick.bind(this);
   }
 
-  protected abstract getUser(): User;
-  protected abstract sendMessage(message?: string): void;
-
-  protected onStart() {
+  public onStart() {
     this.sendMessage('Добро пожаловать!');
     const user = this.getUser();
     user.timerSettings = this.defaultTimerSettings;
   }
 
-  protected onRun() {
+  public onRun() {
     const user = this.getUser();
 
     user.pomodoroTimer.stop();
-    user.pomodoroTimer = configurePomodoroTimer(user.timerSettings, this.sendMessage);
+    user.pomodoroTimer = configureTimer(user.timerSettings, this.sendMessage);
     user.pomodoroTimer.start();
   }
 
-  protected onGetStatus() {
+  public onGetStatus() {
     const user = this.getUser();
 
     if (!user.pomodoroTimer.isRunning()) {
@@ -43,8 +40,9 @@ export default abstract class BaseController {
     this.sendMessage(user.pomodoroTimer.getStatus());
   }
 
-  protected onSetTimerSettings(timer: string) {
-    if (settings.has(timer)) {
+  public onSetTimerSettings(message: string) {
+    const timer = message.slice(11);
+    if (settings.has(timer.trim())) {
       this.sendMessage('Настройки не найдены. Выполните команду /run');
       return;
     }
@@ -54,13 +52,13 @@ export default abstract class BaseController {
     this.sendMessage('Настройки изменены. Выполните команду /run');
   }
 
-  protected onStop() {
+  public onStop() {
     const user = this.getUser();
     user.pomodoroTimer.stop();
-    this.sendMessage('Done!');
+    this.sendMessage('Таймер остановлен');
   }
 
-  protected onNext() {
+  public onNext() {
     const user = this.getUser();
 
     if (!user.pomodoroTimer.isRunning()) {
@@ -71,7 +69,7 @@ export default abstract class BaseController {
     user.pomodoroTimer.next(this.sendMessage);
   }
 
-  protected onSetAutomaticTick() {
+  public onSetAutomaticTick() {
     const user = this.getUser();
 
     user.pomodoroTimer.automaticTick = !user.pomodoroTimer.automaticTick;
@@ -82,4 +80,7 @@ export default abstract class BaseController {
       this.sendMessage('Автоматический переход выключен');
     }
   }
+
+  protected abstract getUser(): User;
+  protected abstract sendMessage(message?: string): void;
 }
