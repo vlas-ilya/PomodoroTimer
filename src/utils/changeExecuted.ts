@@ -1,8 +1,8 @@
 import Tree from '../classes/Tree';
 import TreeNode from '../classes/TreeNode';
-import setExecuting from './setExecuting';
+import setExecuted from './setExecuted';
 
-export default function changeExecuting(tree: Tree): Tree {
+export default function changeExecuted(tree: Tree): Tree | null {
   if (!(tree.executing && tree instanceof TreeNode)) {
     return null;
   }
@@ -13,7 +13,7 @@ export default function changeExecuting(tree: Tree): Tree {
     return null;
   }
 
-  const next = changeExecuting(executingItem);
+  const next = changeExecuted(executingItem);
   if (next) {
     return next;
   }
@@ -23,11 +23,11 @@ export default function changeExecuting(tree: Tree): Tree {
   const indexExecutingItem = tree.items.indexOf(executingItem);
 
   if (indexExecutingItem < tree.items.length - 1) {
-    return setExecuting(tree.items[indexExecutingItem + 1]);
+    return setExecuted(tree.items[indexExecutingItem + 1]);
   }
 
   if (tree.count.next()) {
-    return setExecuting(tree.items[0]);
+    return setExecuted(tree.items[0]);
   }
 
   return null;

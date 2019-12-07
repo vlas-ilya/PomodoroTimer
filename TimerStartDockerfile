@@ -1,0 +1,10 @@
+FROM node:carbon
+
+WORKDIR /app
+
+COPY package*.json /app/
+
+RUN npm install --only= && \
+    rm ./node_modules/sandwich-stream/dist/sandwich-stream.mjs
+
+ENTRYPOINT cd /app && npm run start

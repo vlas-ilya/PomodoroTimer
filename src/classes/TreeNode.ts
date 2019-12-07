@@ -3,7 +3,7 @@ import RealCount from './RealCount';
 import Tree from './Tree';
 
 export default class TreeNode extends Tree {
-  private readonly realCount: number;
+  private readonly realCount: number = 0;
 
   constructor(public count: Count, public items: Tree[]) {
     super();

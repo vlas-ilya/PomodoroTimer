@@ -1,0 +1,21 @@
+FROM node:carbon
+
+WORKDIR /app
+
+RUN mkdir -p /app/build
+RUN mkdir -p /app/src
+RUN mkdir -p /app/dist
+
+COPY package*.json /app/build/
+
+RUN cd ./build && \
+    npm install && \
+    rm ./node_modules/sandwich-stream/dist/sandwich-stream.mjs
+
+ENTRYPOINT cp -r /app/src/src/. /app/build/src/ && \
+           cp /app/src/.babelrc /app/build/.babelrc && \
+           cp /app/src/.prettierrc /app/build/.prettierrc && \
+           cp /app/src/tsconfig.json /app/build/tsconfig.json && \
+           cd /app/build && \
+           npm run build && \
+           cp -r ./dist/. /app/dist/

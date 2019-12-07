@@ -1,7 +1,7 @@
 import Tree from './Tree';
 
 export default class TreeLeaf extends Tree {
-  constructor(public timer: number, public label: string) {
+  constructor(public timer: number, public startTickLabel: string, public stopTickLabel: string) {
     super();
   }
 
@@ -13,7 +13,9 @@ export default class TreeLeaf extends Tree {
       offset +
       `    + timer: ${this.timer}\n` +
       offset +
-      `    + label: ${this.label}\n` +
+      `    + startTickLabel: ${this.startTickLabel}\n` +
+      offset +
+      `    + stopTickLabel: ${this.stopTickLabel}\n` +
       offset +
       `    + executing: ${this.executing}\n`
     );

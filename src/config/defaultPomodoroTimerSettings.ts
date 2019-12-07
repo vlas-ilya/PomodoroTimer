@@ -1,5 +1,7 @@
 // tslint:disable:object-literal-sort-keys
-export const tease = {
+const settings: Map<string, any> = new Map();
+
+settings.set('tease', {
   type: 'node',
   count: '1',
   items: [
@@ -10,24 +12,28 @@ export const tease = {
         {
           type: 'leaf',
           timer: '48',
-          label: 'Начинаем работу (48 минут)',
+          startTickLabel: 'Начинаем работу (48 минут)',
+          stopTickLabel: 'Заканчиваем работу',
         },
         {
           type: 'leaf',
           timer: '16',
-          label: 'Маленький перерыв (16 минут)',
+          startTickLabel: 'Маленький перерыв (16 минут)',
+          stopTickLabel: 'Перерыв закончен',
         },
       ],
     },
     {
       type: 'leaf',
       timer: '48',
-      label: 'Начинаем работу (48 минут)',
+      startTickLabel: 'Начинаем работу (48 минут)',
+      stopTickLabel: 'Заканчиваем работу',
     },
     {
       type: 'leaf',
       timer: '60',
-      label: 'Большой перерыв (60 минут)',
+      startTickLabel: 'Большой перерыв (60 минут)',
+      stopTickLabel: 'Перерыв закончен',
     },
     {
       type: 'node',
@@ -36,14 +42,74 @@ export const tease = {
         {
           type: 'leaf',
           timer: '48',
-          label: 'Начинаем работу (48 минут)',
+          startTickLabel: 'Начинаем работу (48 минут)',
+          stopTickLabel: 'Заканчиваем работу',
         },
         {
           type: 'leaf',
           timer: '16',
-          label: 'Маленький перерыв (16 минут)',
+          startTickLabel: 'Маленький перерыв (16 минут)',
+          stopTickLabel: 'Перерыв закончен',
         },
       ],
     },
   ],
-};
+});
+
+settings.set('default', {
+  type: 'node',
+  count: '1',
+  items: [
+    {
+      type: 'node',
+      count: '4',
+      items: [
+        {
+          type: 'leaf',
+          timer: '25',
+          startTickLabel: 'Начинаем работу (25 минут)',
+          stopTickLabel: 'Заканчиваем работу',
+        },
+        {
+          type: 'leaf',
+          timer: '5',
+          startTickLabel: 'Маленький перерыв (5 минут)',
+          stopTickLabel: 'Перерыв закончен',
+        },
+      ],
+    },
+    {
+      type: 'leaf',
+      timer: '25',
+      startTickLabel: 'Начинаем работу (25 минут)',
+      stopTickLabel: 'Заканчиваем работу',
+    },
+    {
+      type: 'leaf',
+      timer: '60',
+      startTickLabel: 'Большой перерыв (60 минут)',
+      stopTickLabel: 'Перерыв закончен',
+    },
+  ],
+});
+
+settings.set('test', {
+  type: 'node',
+  count: '4',
+  items: [
+    {
+      type: 'leaf',
+      timer: '2',
+      startTickLabel: 'Начинаем работу (2 минуты)',
+      stopTickLabel: 'Заканчиваем работу',
+    },
+    {
+      type: 'leaf',
+      timer: '1',
+      startTickLabel: 'Маленький перерыв (1 минута)',
+      stopTickLabel: 'Перерыв закончен',
+    },
+  ],
+});
+
+export default settings;

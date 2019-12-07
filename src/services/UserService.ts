@@ -1,19 +1,22 @@
-// @ts-ignore
-import { ContextMessageUpdate } from 'telegraf';
 import User from '../classes/User';
+import PomodoroTimer from './PomodoroTimer';
 
 export default class UserService {
-  private users: any = {};
+  private users: Map<string, User> = new Map<string, User>();
 
-  public get(ctx: ContextMessageUpdate): User {
-    if (this.users[ctx.message.from.id]) {
-      const user = this.users[ctx.message.from.id];
-      user.ctx = user.ctx || ctx;
+  public get(id: string): User | null {
+    const user = this.users.get(id);
+
+    if (user) {
       return user;
     }
 
-    const newUser = new User(ctx);
-    this.users[ctx.message.from.id] = newUser;
-    return newUser;
+    return null;
+  }
+
+  public create(id: string, timer: PomodoroTimer): User {
+    const user = new User(id, timer);
+    this.users.set(id, user);
+    return user;
   }
 }

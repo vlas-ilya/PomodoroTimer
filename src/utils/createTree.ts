@@ -1,10 +1,11 @@
+import Count from '../classes/Count';
 import InfinityCount from '../classes/InfinityCount';
 import RealCount from '../classes/RealCount';
 import Tree from '../classes/Tree';
 import TreeLeaf from '../classes/TreeLeaf';
 import TreeNode from '../classes/TreeNode';
 
-const createCount = (count: string) => {
+const createCount = (count: string): Count => {
   if (count === 'infinity') {
     return new InfinityCount();
   }
@@ -20,8 +21,9 @@ export default function createTree(json: any): Tree {
     }
     case 'leaf': {
       const timer = Number(json.timer);
-      const label = String(json.label);
-      return new TreeLeaf(timer, label);
+      const startTickLabel = String(json.startTickLabel);
+      const stopTickLabel = String(json.stopTickLabel);
+      return new TreeLeaf(timer, startTickLabel, stopTickLabel);
     }
     default: {
       throw Error('Unknown TreeServiceItem.type');

@@ -1,4 +1,6 @@
-import TelegramBot from './services/TelegramBot';
+import TelegramController from './controllers/TelegramController';
 
-// tslint:disable-next-line:no-unused-expression
-new TelegramBot(process.env.TOKEN);
+if (process.env.MODE === 'telegram') {
+  // tslint:disable-next-line:no-unused-expression
+  new TelegramController(String(process.env.TOKEN));
+}

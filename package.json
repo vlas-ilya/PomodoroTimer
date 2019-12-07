@@ -5,8 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "babel src --out-dir dist --extensions '.ts' --source-maps inline",
-    "run": "node dist/index.js",
-    "tar": "tar -cf pomodoro-timer.tar ./dist",
+    "start": "node dist/index.js",
+    "run": "npm run build && npm run start",
     "prettier": "prettier --write './src/**/*.ts'",
     "tslint": "tslint --fix './src/**/*.ts'"
   },

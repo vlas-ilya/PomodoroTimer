@@ -7,15 +7,19 @@ export default function configurePomodoroTimer(
   const pomodoroTimer = new PomodoroTimer(json);
 
   pomodoroTimer.onStart = () => {
-    sendMessage('Start!');
+    sendMessage('Таймер запущен');
   };
 
   pomodoroTimer.onTick = treeItem => {
-    sendMessage(`${treeItem.label}`);
+    sendMessage(`${treeItem.startTickLabel}`);
+  };
+
+  pomodoroTimer.onEndTick = treeItem => {
+    sendMessage(`${treeItem.stopTickLabel}`);
   };
 
   pomodoroTimer.onDone = () => {
-    sendMessage('Done!');
+    sendMessage('Таймер остановлен');
   };
 
   return pomodoroTimer;
