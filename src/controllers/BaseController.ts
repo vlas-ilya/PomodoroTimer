@@ -42,7 +42,7 @@ export default abstract class BaseController {
 
   public onSetTimerSettings(message: string) {
     const timer = message.slice(11);
-    if (settings.has(timer.trim())) {
+    if (!settings.has(timer.trim())) {
       this.sendMessage('Настройки не найдены. Выполните команду /run');
       return;
     }

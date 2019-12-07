@@ -3,6 +3,17 @@ import Telegraf, { ContextMessageUpdate } from 'telegraf';
 import TelegramController from '../controllers/TelegramController';
 import UserService from '../services/UserService';
 
+const help = `
+Команды:
+  /start - запуск бота
+  /set_timer <timer> - установка настроек таймера. timer: default | test | tease
+  /automatic - включение/выключение автоматического перехода к следующему таймеру
+  /run - запуск таймера
+  /next - перейти к следующему шагу
+  /status - показать текущий статус таймера
+  /stop - остановка таймера
+`;
+
 export default function runTelegramBot(token: string) {
   const bot = new Telegraf(String(token));
   const userService = new UserService();
@@ -59,6 +70,10 @@ export default function runTelegramBot(token: string) {
       controller.onStart();
     }),
   );
+
+  bot.help(middleware((ctx) => {
+    ctx.reply(help).catch();
+  }));
 
   bot.command(
     'run',
