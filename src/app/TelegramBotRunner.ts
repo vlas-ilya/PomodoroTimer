@@ -2,11 +2,11 @@
 import Telegraf, { ContextMessageUpdate } from 'telegraf';
 
 import AppContext from './AppContext';
+import Middleware from '../classes/utils/Middleware';
+import TelegramController from '../controllers/TelegramController';
 import applyMiddleware from '../utils/applyMiddleware';
 import loggingErrorMiddleware from '../utils/loggingErrorMiddleware';
 import loggingMessagesMiddleware from '../utils/loggingMessagesMiddleware';
-import TelegramController from '../controllers/TelegramController';
-import Middleware from '../classes/utils/Middleware';
 
 const help = `
 Команды:
@@ -30,11 +30,11 @@ export default class TelegramBotRunner {
   constructor(private token: string) {
     TelegramBotRunner.getController = TelegramBotRunner.getController.bind(this);
     this.run = this.run.bind(this);
-    
+
     this.bot = new Telegraf(String(token));
     this.middleware = applyMiddleware([loggingMessagesMiddleware, loggingErrorMiddleware]);
   }
-  
+
   public run() {
     this.bot.start(
       this.middleware((ctx: ContextMessageUpdate) => {
@@ -109,4 +109,3 @@ export default class TelegramBotRunner {
     });
   }
 }
-
