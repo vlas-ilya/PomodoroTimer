@@ -1,4 +1,7 @@
 {
+  "rules": {
+    "ordered-imports": false
+  },
   "extends": [
     "tslint:latest",
     "tslint-config-prettier"

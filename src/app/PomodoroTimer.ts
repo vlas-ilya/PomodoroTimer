@@ -1,11 +1,11 @@
 import Tree from '../classes/Tree';
 import TreeLeaf from '../classes/TreeLeaf';
-import changeExecuted from './changeExecuted';
-import clearExecuted from './clearExecuted';
-import createTree from './createTree';
-import declOfNum from './declOfNum';
-import getExecuted from './getExecuted';
-import setExecuted from './setExecuted';
+import changeExecuted from '../utils/changeExecuted';
+import clearExecuted from '../utils/clearExecuted';
+import createTree from '../utils/createTree';
+import declOfNum from '../utils/declOfNum';
+import getExecuted from '../utils/getExecuted';
+import setExecuted from '../utils/setExecuted';
 
 export default class PomodoroTimer {
   public automaticTick: boolean = false;
@@ -40,10 +40,6 @@ export default class PomodoroTimer {
   public next(sendMessage: (message?: string) => void): void {
     const executed = getExecuted(this.tree);
 
-    if (executed && executed.stopTickLabel) {
-      sendMessage(executed.stopTickLabel);
-    }
-
     if (this.isRunning()) {
       this.stop();
     }
@@ -60,7 +56,9 @@ export default class PomodoroTimer {
 
   public getStatus(): string {
     const currentDate = new Date();
-    if (!(this.lastTick && this.nextTick)) {
+    const executed = getExecuted(this.tree);
+
+    if (!(executed && this.lastTick && this.nextTick)) {
       return 'Таймер не запущен';
     }
 
@@ -69,6 +67,7 @@ export default class PomodoroTimer {
     const minutes = ['минута', 'минуты', 'минут'];
 
     return (
+      `${executed.label} (${executed.timer} ${declOfNum(executed.timer, minutes)})\n` +
       `Прошло ${working} ${declOfNum(working, minutes)}\n` +
       `Осталось ${leftTime} ${declOfNum(leftTime, minutes)}`
     );

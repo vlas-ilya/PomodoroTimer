@@ -1,10 +1,10 @@
+import AppContext from '../app/AppContext';
+import BaseController from './BaseController';
 // @ts-ignore
 import { ContextMessageUpdate } from 'telegraf';
-import User from '../classes/User';
-import configureTimer from '../config/configureTimer';
-import settings from '../config/timers';
+import User from '../classes/utils/User';
 import UserService from '../services/UserService';
-import BaseController from './BaseController';
+import settings from '../config/timerPresets';
 
 export default class TelegramController extends BaseController {
   constructor(private ctx: ContextMessageUpdate, private userService: UserService) {
@@ -22,7 +22,7 @@ export default class TelegramController extends BaseController {
 
     return this.userService.create(
       this.ctx.message.from.id,
-      configureTimer(settings.get('default'), this.sendMessage),
+      AppContext.getContext().getTimer(settings.get('default'), this.sendMessage),
     );
   }
 

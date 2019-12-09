@@ -1,6 +1,6 @@
-import User from '../classes/User';
-import configureTimer from '../config/configureTimer';
-import settings from '../config/timers';
+import AppContext from '../app/AppContext';
+import User from '../classes/utils/User';
+import settings from '../config/timerPresets';
 
 export default abstract class BaseController {
   private defaultTimerSettings: any = settings.get('default');
@@ -25,7 +25,7 @@ export default abstract class BaseController {
     const user = this.getUser();
 
     user.pomodoroTimer.stop();
-    user.pomodoroTimer = configureTimer(user.timerSettings, this.sendMessage);
+    user.pomodoroTimer = AppContext.getContext().getTimer(user.timerSettings, this.sendMessage);
     user.pomodoroTimer.start();
   }
 
@@ -82,5 +82,6 @@ export default abstract class BaseController {
   }
 
   protected abstract getUser(): User;
+
   protected abstract sendMessage(message?: string): void;
 }
