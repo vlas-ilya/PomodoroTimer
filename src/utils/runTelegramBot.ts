@@ -1,13 +1,12 @@
 // @ts-ignore
-import Telegraf, { ContextMessageUpdate } from 'telegraf';
+import Telegraf, {ContextMessageUpdate, Markup} from 'telegraf';
 import TelegramController from '../controllers/TelegramController';
 import UserService from '../services/UserService';
 
 const help = `
 Команды:
   /start - запуск бота
-  /set_timer <timer> - установка настроек таймера. timer: default | test | tease
-  /automatic - включение/выключение автоматического перехода к следующему таймеру
+  /settings - настройки таймера 
   /run - запуск таймера
   /next - перейти к следующему шагу
   /status - показать текущий статус таймера
@@ -20,10 +19,12 @@ export default function runTelegramBot(token: string) {
   const controllers: Map<string, TelegramController> = new Map<string, TelegramController>();
 
   const getController = (ctx: ContextMessageUpdate): TelegramController => {
-    if (!controllers.has(ctx.message.from.id)) {
-      controllers.set(ctx.message.from.id, new TelegramController(ctx, userService));
+    const id = ctx.message ? ctx.message.from.id : ctx.update.callback_query.from.id;
+
+    if (!controllers.has(id)) {
+      controllers.set(id, new TelegramController(ctx, userService));
     }
-    const controller = controllers.get(ctx.message.from.id);
+    const controller = controllers.get(id);
     if (!controller) {
       throw new Error('Some error!');
     }
@@ -53,8 +54,10 @@ export default function runTelegramBot(token: string) {
   ): (ctx: ContextMessageUpdate) => void {
     return ctx => {
       method(ctx);
-      // tslint:disable-next-line:no-console
-      console.log(`User [id=${ctx.message.from.id}] send message ${ctx.message.text}`);
+      if (ctx.message) {
+        // tslint:disable-next-line:no-console
+        console.log(`User [id=${ctx.message.from.id}] send message ${ctx.message.text}`);
+      }
     };
   }
 
@@ -67,13 +70,16 @@ export default function runTelegramBot(token: string) {
   bot.start(
     middleware((ctx: ContextMessageUpdate) => {
       const controller = getController(ctx);
-      controller.onStart();
+      controller.onStart(ctx.from.first_name);
+      ctx.reply(help).catch();
     }),
   );
 
-  bot.help(middleware((ctx) => {
-    ctx.reply(help).catch();
-  }));
+  bot.help(
+    middleware(ctx => {
+      ctx.reply(help).catch();
+    }),
+  );
 
   bot.command(
     'run',
@@ -101,10 +107,88 @@ export default function runTelegramBot(token: string) {
   );
 
   bot.command(
-    'set_timer',
+    'settings',
     middleware((ctx: ContextMessageUpdate) => {
       const controller = getController(ctx);
-      controller.onSetTimerSettings(ctx.message.text);
+      const automatic = controller.getUser().pomodoroTimer.automaticTick;
+
+      const settings = Telegraf.Extra
+        .markup((m: Markup) => m.inlineKeyboard([
+          m.callbackButton(`Auto next session (${automatic ? 'ON' : 'OFF'})`, 'automatic'),
+          m.callbackButton(`Timer settings`, 'timer')
+        ]));
+
+      ctx.reply('Settings', settings).catch();
+    }),
+  );
+
+  bot.on(
+    'callback_query',
+    middleware(ctx => {
+      const controller = getController(ctx);
+
+      switch (ctx.update.callback_query.data) {
+        case 'automatic': {
+          controller.onSetAutomaticTick();
+          const automatic = controller.getUser().pomodoroTimer.automaticTick;
+          const settings = Telegraf.Extra
+            .markdown()
+            .markup((m: Markup) => m.inlineKeyboard([
+              m.callbackButton(`Auto next session (${automatic ? 'ON' : 'OFF'})`, 'automatic'),
+              m.callbackButton(`Timer settings`, 'timer')
+            ]));
+          ctx.editMessageText('Settings', settings).catch();
+          return;
+        }
+        case 'timer': {
+          const timerSettings = Telegraf.Extra
+            .markdown()
+            .markup((m: Markup) => m.inlineKeyboard([
+              m.callbackButton(`default`, 'timer default'),
+              m.callbackButton(`test`, 'timer test'),
+              m.callbackButton(`tease`, 'timer tease'),
+            ]));
+
+          ctx.editMessageText('Settings', timerSettings).catch();
+          return;
+        }
+        case 'timer default': {
+          controller.onSetTimerSettings('default');
+          const automatic = controller.getUser().pomodoroTimer.automaticTick;
+          const settings = Telegraf.Extra
+            .markdown()
+            .markup((m: Markup) => m.inlineKeyboard([
+              m.callbackButton(`Auto next session (${automatic ? 'ON' : 'OFF'})`, 'automatic'),
+              m.callbackButton(`Timer settings`, 'timer')
+            ]));
+          ctx.editMessageText('Settings', settings).catch();
+          return;
+        }
+        case 'timer test': {
+          controller.onSetTimerSettings('test');
+          const automatic = controller.getUser().pomodoroTimer.automaticTick;
+          const settings = Telegraf.Extra
+            .markdown()
+            .markup((m: Markup) => m.inlineKeyboard([
+              m.callbackButton(`Auto next session (${automatic ? 'ON' : 'OFF'})`, 'automatic'),
+              m.callbackButton(`Timer settings`, 'timer')
+            ]));
+          ctx.editMessageText('Settings', settings).catch();
+          return;
+        }
+        case 'timer tease': {
+          controller.onSetTimerSettings('tease');
+          const automatic = controller.getUser().pomodoroTimer.automaticTick;
+          const settings = Telegraf.Extra
+            .markdown()
+            .markup((m: Markup) => m.inlineKeyboard([
+              m.callbackButton(`Auto next session (${automatic ? 'ON' : 'OFF'})`, 'automatic'),
+              m.callbackButton(`Timer settings`, 'timer')
+            ]));
+          ctx.editMessageText('Settings', settings).catch();
+          return;
+        }
+      }
     }),
   );
 
@@ -113,14 +197,6 @@ export default function runTelegramBot(token: string) {
     middleware((ctx: ContextMessageUpdate) => {
       const controller = getController(ctx);
       controller.onNext();
-    }),
-  );
-
-  bot.command(
-    'automatic',
-    middleware((ctx: ContextMessageUpdate) => {
-      const controller = getController(ctx);
-      controller.onSetAutomaticTick();
     }),
   );
 

@@ -44,7 +44,7 @@ export default class PomodoroTimer {
       sendMessage(executed.stopTickLabel);
     }
 
-    if (this.isRunning()) {
+    if (this.isRunning() && this.nextTick && this.nextTick > new Date()) {
       this.stop();
     }
 

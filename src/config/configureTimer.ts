@@ -15,9 +15,7 @@ export default function configureTimer(
   };
 
   pomodoroTimer.onEndTick = (treeItem, automaticTick) => {
-    if (automaticTick) {
-      sendMessage(`${treeItem.stopTickLabel}`);
-    } else {
+    if (!automaticTick) {
       sendMessage(`${treeItem.stopTickLabel}. Нажмите /next для продолжения`);
     }
   };
