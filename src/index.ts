@@ -1,5 +1,5 @@
-import runTelegramBot from './app/runTelegramBot';
+import TelegramBotRunner from './app/TelegramBotRunner';
 
 if (process.env.MODE === 'telegram') {
-  runTelegramBot(String(process.env.TOKEN));
+  new TelegramBotRunner(String(process.env.TOKEN)).run();
 }
