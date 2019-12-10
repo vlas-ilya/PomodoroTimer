@@ -57,14 +57,14 @@ presets.set('tease', {
           startTickLabel: 'Маленький перерыв (16 минут)',
           stopTickLabel: 'Перерыв завершен',
         },
-        {
-          type: 'leaf',
-          timer: '48',
-          label: 'Рабочая сессия',
-          startTickLabel: 'Начинаем работу (48 минут)',
-          stopTickLabel: 'Рабочая сессия завершена',
-        },
       ],
+    },
+    {
+      type: 'leaf',
+      timer: '48',
+      label: 'Рабочая сессия',
+      startTickLabel: 'Начинаем работу (48 минут)',
+      stopTickLabel: 'Рабочая сессия завершена',
     },
   ],
 });
