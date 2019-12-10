@@ -1,7 +1,7 @@
-import Tree from '../classes/Tree';
-import TreeLeaf from '../classes/TreeLeaf';
-import TreeNode from '../classes/TreeNode';
-import { countUtils } from './count.utils';
+import Tree from '../classes/tree/Tree';
+import TreeLeaf from '../classes/tree/TreeLeaf';
+import TreeNode from '../classes/tree/TreeNode';
+import { createCount } from './count.utils';
 
 export function changeExecuted(tree: Tree): Tree | null {
   if (!(tree.executing && tree instanceof TreeNode)) {
@@ -44,7 +44,7 @@ export function clearExecuted(tree: Tree): void {
 export function createTree(json: any): Tree {
   switch (json.type) {
     case 'node': {
-      const count = countUtils(json.count);
+      const count = createCount(json.count);
       const items = json.items ? json.items.map(createTree) : [];
       return new TreeNode(count, items);
     }

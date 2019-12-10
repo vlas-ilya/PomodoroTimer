@@ -1,5 +1,5 @@
-import Count from './Count';
-import RealCount from './RealCount';
+import Count from '../count/Count';
+import RealCount from '../count/RealCount';
 import Tree from './Tree';
 
 export default class TreeNode extends Tree {

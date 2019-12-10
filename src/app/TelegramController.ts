@@ -1,18 +1,23 @@
-import AppContext from '../app/AppContext';
+import AppContext from './AppContext';
+// @ts-ignore
+import { ContextMessageUpdate } from 'telegraf';
 import User from '../classes/utils/User';
-import settings from '../config/timerPresets';
+import UserService from './UserService';
+import presets from '../utils/presets';
 
-export default abstract class BaseController {
-  private defaultTimerSettings: any = settings.get('default');
+export default class TelegramController {
+  private defaultTimerSettings: any = presets.get('default');
 
-  protected constructor() {
-    this.onStart = this.onStart.bind(this);
-    this.onRun = this.onRun.bind(this);
-    this.onStop = this.onStop.bind(this);
+  public constructor(private ctx: ContextMessageUpdate, private userService: UserService) {
+    this.getUser = this.getUser.bind(this);
     this.onGetStatus = this.onGetStatus.bind(this);
-    this.onSetTimerSettings = this.onSetTimerSettings.bind(this);
     this.onNext = this.onNext.bind(this);
+    this.onRun = this.onRun.bind(this);
     this.onSetAutomaticTick = this.onSetAutomaticTick.bind(this);
+    this.onSetTimerSettings = this.onSetTimerSettings.bind(this);
+    this.onStart = this.onStart.bind(this);
+    this.onStop = this.onStop.bind(this);
+    this.sendMessage = this.sendMessage.bind(this);
   }
 
   public onStart() {
@@ -23,6 +28,8 @@ export default abstract class BaseController {
 
   public onRun() {
     const user = this.getUser();
+
+    user.timerSettings = user.timerSettings || this.defaultTimerSettings;
 
     user.pomodoroTimer.stop();
     user.pomodoroTimer = AppContext.getContext().getTimer(user.timerSettings, this.sendMessage);
@@ -42,13 +49,13 @@ export default abstract class BaseController {
 
   public onSetTimerSettings(message: string) {
     const timer = message.slice(11);
-    if (!settings.has(timer.trim())) {
+    if (!presets.has(timer.trim())) {
       this.sendMessage('Настройки не найдены. Выполните команду /run');
       return;
     }
 
     const user = this.getUser();
-    user.timerSettings = settings.get(timer);
+    user.timerSettings = presets.get(timer);
     this.sendMessage('Настройки изменены. Выполните команду /run');
   }
 
@@ -66,7 +73,7 @@ export default abstract class BaseController {
       return;
     }
 
-    user.pomodoroTimer.next(this.sendMessage);
+    user.pomodoroTimer.next();
   }
 
   public onSetAutomaticTick() {
@@ -81,7 +88,20 @@ export default abstract class BaseController {
     }
   }
 
-  protected abstract getUser(): User;
+  private getUser(): User {
+    const user = this.userService.get(this.ctx.message.from.id);
 
-  protected abstract sendMessage(message?: string): void;
+    if (user) {
+      return user;
+    }
+
+    return this.userService.create(
+      this.ctx.message.from.id,
+      AppContext.getContext().getTimer(presets.get('default'), this.sendMessage),
+    );
+  }
+
+  private sendMessage(message?: string): void {
+    this.ctx.reply(message).catch();
+  }
 }

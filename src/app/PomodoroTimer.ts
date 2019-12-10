@@ -6,8 +6,8 @@ import {
   setExecuted,
 } from '../utils/tree.utils';
 
-import Tree from '../classes/Tree';
-import TreeLeaf from '../classes/TreeLeaf';
+import Tree from '../classes/tree/Tree';
+import TreeLeaf from '../classes/tree/TreeLeaf';
 import declOfNum from '../utils/declOfNum';
 
 export default class PomodoroTimer {
@@ -40,9 +40,7 @@ export default class PomodoroTimer {
     return Boolean(this.lastTick && this.nextTick);
   }
 
-  public next(sendMessage: (message?: string) => void): void {
-    const executed = getExecuted(this.tree);
-
+  public next(): void {
     if (this.isRunning()) {
       this.stop();
     }
@@ -76,8 +74,8 @@ export default class PomodoroTimer {
     );
   }
 
-  private startTimeout(treeItem: Tree | null) {
-    if (!(treeItem && treeItem instanceof TreeLeaf)) {
+  private startTimeout(item: Tree | null) {
+    if (!(item && item instanceof TreeLeaf)) {
       if (this.onDone) {
         this.onDone();
       }
@@ -85,19 +83,19 @@ export default class PomodoroTimer {
     }
 
     if (this.onTick) {
-      this.onTick(treeItem);
+      this.onTick(item);
     }
 
     this.timeout = setTimeout(() => {
       if (this.onEndTick) {
-        this.onEndTick(treeItem, this.automaticTick);
+        this.onEndTick(item, this.automaticTick);
       }
       if (this.automaticTick) {
         this.startTimeout(changeExecuted(this.tree));
       }
-    }, treeItem.timer * 1000 * 60);
+    }, item.timer * 1000 * 60);
 
     this.lastTick = new Date();
-    this.nextTick = new Date(this.lastTick.getTime() + treeItem.timer * 1000 * 60);
+    this.nextTick = new Date(this.lastTick.getTime() + item.timer * 1000 * 60);
   }
 }

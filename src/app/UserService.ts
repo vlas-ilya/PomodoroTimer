@@ -1,4 +1,4 @@
-import PomodoroTimer from '../app/PomodoroTimer';
+import PomodoroTimer from './PomodoroTimer';
 import User from '../classes/utils/User';
 
 export default class UserService {

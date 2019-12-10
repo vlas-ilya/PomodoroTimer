@@ -1,7 +1,7 @@
 // tslint:disable:object-literal-sort-keys
-const settings: Map<string, any> = new Map();
+const presets: Map<string, any> = new Map();
 
-settings.set('tease', {
+presets.set('tease', {
   type: 'node',
   count: '1',
   items: [
@@ -69,7 +69,7 @@ settings.set('tease', {
   ],
 });
 
-settings.set('default', {
+presets.set('default', {
   type: 'node',
   count: '1',
   items: [
@@ -110,7 +110,7 @@ settings.set('default', {
   ],
 });
 
-settings.set('test', {
+presets.set('test', {
   type: 'node',
   count: '4',
   items: [
@@ -131,4 +131,4 @@ settings.set('test', {
   ],
 });
 
-export default settings;
+export default presets;

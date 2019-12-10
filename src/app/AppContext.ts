@@ -1,8 +1,8 @@
 // @ts-ignore
 import { ContextMessageUpdate } from 'telegraf';
 import PomodoroTimer from './PomodoroTimer';
-import TelegramController from '../controllers/TelegramController';
-import UserService from '../services/UserService';
+import TelegramController from './TelegramController';
+import UserService from './UserService';
 
 export default class AppContext {
   public static getContext = (): AppContext => AppContext.context;

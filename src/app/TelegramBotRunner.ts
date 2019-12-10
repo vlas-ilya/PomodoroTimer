@@ -2,8 +2,7 @@
 import Telegraf, { ContextMessageUpdate } from 'telegraf';
 
 import AppContext from './AppContext';
-import Middleware from '../classes/utils/Middleware';
-import TelegramController from '../controllers/TelegramController';
+import TelegramController from './TelegramController';
 import applyMiddleware from '../utils/applyMiddleware';
 import loggingErrorMiddleware from '../utils/loggingErrorMiddleware';
 import loggingMessagesMiddleware from '../utils/loggingMessagesMiddleware';
@@ -25,87 +24,75 @@ export default class TelegramBotRunner {
   }
 
   private readonly bot: Telegraf<ContextMessageUpdate>;
-  private readonly middleware: Middleware;
 
   constructor(private token: string) {
     TelegramBotRunner.getController = TelegramBotRunner.getController.bind(this);
     this.run = this.run.bind(this);
 
     this.bot = new Telegraf(String(token));
-    this.middleware = applyMiddleware([loggingMessagesMiddleware, loggingErrorMiddleware]);
   }
 
   public run() {
-    this.bot.start(
-      this.middleware((ctx: ContextMessageUpdate) => {
-        const controller = TelegramBotRunner.getController(ctx);
-        controller.onStart();
-      }),
-    );
+    const middleware = applyMiddleware([loggingMessagesMiddleware, loggingErrorMiddleware]);
 
-    this.bot.help(
-      this.middleware((ctx: ContextMessageUpdate) => {
-        ctx.reply(help).catch();
-      }),
-    );
-
-    this.bot.command(
-      'run',
-      this.middleware((ctx: ContextMessageUpdate) => {
-        const controller = TelegramBotRunner.getController(ctx);
-        controller.onRun();
-      }),
-    );
-
-    this.bot.command(
-      'stop',
-      this.middleware((ctx: ContextMessageUpdate) => {
-        const controller = TelegramBotRunner.getController(ctx);
-        controller.onStop();
-        AppContext.getContext().removeTelegramController(ctx);
-      }),
-    );
-
-    this.bot.command(
-      'status',
-      this.middleware((ctx: ContextMessageUpdate) => {
-        const controller = TelegramBotRunner.getController(ctx);
-        controller.onGetStatus();
-      }),
-    );
-
-    this.bot.command(
-      'set_timer',
-      this.middleware((ctx: ContextMessageUpdate) => {
-        const controller = TelegramBotRunner.getController(ctx);
-        controller.onSetTimerSettings(ctx.message.text);
-      }),
-    );
-
-    this.bot.command(
-      'next',
-      this.middleware((ctx: ContextMessageUpdate) => {
-        const controller = TelegramBotRunner.getController(ctx);
-        controller.onNext();
-      }),
-    );
-
-    this.bot.command(
-      'automatic',
-      this.middleware((ctx: ContextMessageUpdate) => {
-        const controller = TelegramBotRunner.getController(ctx);
-        controller.onSetAutomaticTick();
-      }),
-    );
-
-    this.bot.launch().catch((error: any) => {
-      // tslint:disable-next-line:no-console
-      console.log(error);
-
-      AppContext.getContext().clearTelegramController();
-
-      // tslint:disable-next-line:no-console
-      console.log('The end:(');
-    });
+    this.bot.start(middleware(this.onStart));
+    this.bot.help(middleware(this.onHelp));
+    this.bot.command('run', middleware(this.onRun));
+    this.bot.command('stop', middleware(this.onStop));
+    this.bot.command('status', middleware(this.onStatus));
+    this.bot.command('set_timer', middleware(this.onSetTimerSettings));
+    this.bot.command('next', middleware(this.onNext));
+    this.bot.command('automatic', middleware(this.onAutomatic));
+    this.bot.launch().catch(this.onError);
   }
+
+  private onStart = (ctx: ContextMessageUpdate) => {
+    const controller = TelegramBotRunner.getController(ctx);
+    controller.onStart();
+  };
+
+  private onHelp = (ctx: ContextMessageUpdate) => {
+    ctx.reply(help).catch();
+  };
+
+  private onRun = (ctx: ContextMessageUpdate) => {
+    const controller = TelegramBotRunner.getController(ctx);
+    controller.onRun();
+  };
+
+  private onStop = (ctx: ContextMessageUpdate) => {
+    const controller = TelegramBotRunner.getController(ctx);
+    controller.onStop();
+    AppContext.getContext().removeTelegramController(ctx);
+  };
+
+  private onStatus = (ctx: ContextMessageUpdate) => {
+    const controller = TelegramBotRunner.getController(ctx);
+    controller.onGetStatus();
+  };
+
+  private onSetTimerSettings = (ctx: ContextMessageUpdate) => {
+    const controller = TelegramBotRunner.getController(ctx);
+    controller.onSetTimerSettings(ctx.message.text);
+  };
+
+  private onNext = (ctx: ContextMessageUpdate) => {
+    const controller = TelegramBotRunner.getController(ctx);
+    controller.onNext();
+  };
+
+  private onAutomatic = (ctx: ContextMessageUpdate) => {
+    const controller = TelegramBotRunner.getController(ctx);
+    controller.onSetAutomaticTick();
+  };
+
+  private onError = (error: any) => {
+    // tslint:disable-next-line:no-console
+    console.log(error);
+
+    AppContext.getContext().clearTelegramController();
+
+    // tslint:disable-next-line:no-console
+    console.log('The end:(');
+  };
 }
