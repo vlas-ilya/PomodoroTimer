@@ -4,7 +4,7 @@ import { ContextMessageUpdate } from 'telegraf';
 export default class MessageQueue {
   private messages: string[] = [];
   private timer?: NodeJS.Timeout | null;
-  private readonly timeout: number = 1000;
+  private readonly timeout: number = 200;
 
   constructor(private ctx: ContextMessageUpdate) {
     this.push = this.push.bind(this);
@@ -16,7 +16,7 @@ export default class MessageQueue {
       return;
     }
     this.messages.push(message);
-    if (this.timer === null) {
+    if (!this.timer) {
       this.timer = setTimeout(this.sendMessage, this.timeout);
     }
   }
