@@ -14,8 +14,8 @@ export default class UserService {
     return null;
   }
 
-  public create(id: string, timer: PomodoroTimer): User {
-    const user = new User(id, timer);
+  public create(id: string, json: any, timer: PomodoroTimer): User {
+    const user = new User(json, timer);
     this.users.set(id, user);
     return user;
   }

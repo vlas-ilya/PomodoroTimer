@@ -40,6 +40,7 @@ export default class TelegramBotRunner {
     this.bot.command('run', middleware(this.onRun));
     this.bot.command('stop', middleware(this.onStop));
     this.bot.command('status', middleware(this.onStatus));
+    this.bot.command('info', middleware(this.onGetInfo));
     this.bot.command('set_timer', middleware(this.onSetTimerSettings));
     this.bot.command('next', middleware(this.onNext));
     this.bot.command('automatic', middleware(this.onAutomatic));
@@ -69,6 +70,11 @@ export default class TelegramBotRunner {
   private onStatus = (ctx: ContextMessageUpdate) => {
     const controller = TelegramBotRunner.getController(ctx);
     controller.onGetStatus();
+  };
+
+  private onGetInfo = (ctx: ContextMessageUpdate) => {
+    const controller = TelegramBotRunner.getController(ctx);
+    controller.onGetInfo();
   };
 
   private onSetTimerSettings = (ctx: ContextMessageUpdate) => {

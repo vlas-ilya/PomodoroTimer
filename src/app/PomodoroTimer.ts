@@ -13,6 +13,8 @@ import declOfNum from '../utils/declOfNum';
 export default class PomodoroTimer {
   public automaticTick: boolean = false;
   private readonly tree: Tree;
+  private readonly name: string;
+  private readonly description: string;
   private timeout?: NodeJS.Timeout;
   private lastTick?: Date;
   private nextTick?: Date;
@@ -24,7 +26,9 @@ export default class PomodoroTimer {
     public onStart?: () => void,
     public onDone?: () => void,
   ) {
-    this.tree = createTree(json);
+    this.name = json.name;
+    this.description = json.description;
+    this.tree = createTree(json.tree);
   }
 
   public start(): void {
@@ -53,6 +57,10 @@ export default class PomodoroTimer {
     if (this.timeout) {
       clearTimeout(this.timeout);
     }
+  }
+
+  public getInfo(): string {
+    return `*${this.name}*\n${this.description}`;
   }
 
   public getStatus(): string {

@@ -29,7 +29,7 @@ export default class MessageQueue {
 
     const message = this.messages.shift();
 
-    this.ctx.reply(message).catch();
+    this.ctx.replyWithMarkdown(message).catch();
     this.timer = this.messages.length !== 0 ? setTimeout(this.sendMessage, this.timeout) : null;
   }
 }

@@ -41,6 +41,11 @@ export default class TelegramController {
     user.pomodoroTimer.start();
   }
 
+  public onGetInfo() {
+    const user = this.getUser();
+    this.sendMessage(user.pomodoroTimer.getInfo());
+  }
+
   public onGetStatus() {
     const user = this.getUser();
 
@@ -61,6 +66,8 @@ export default class TelegramController {
 
     const user = this.getUser();
     user.timerSettings = presets.get(timer);
+    user.pomodoroTimer.stop();
+    user.pomodoroTimer = AppContext.getContext().getTimer(user.timerSettings, this.sendMessage);
     this.sendMessage('Настройки изменены. Выполните команду /run');
   }
 
@@ -102,6 +109,7 @@ export default class TelegramController {
 
     return this.userService.create(
       this.ctx.message.from.id,
+      presets.get('default'),
       AppContext.getContext().getTimer(presets.get('default'), this.sendMessage),
     );
   }
