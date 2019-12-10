@@ -1,6 +1,7 @@
 import AppContext from './AppContext';
 // @ts-ignore
 import { ContextMessageUpdate } from 'telegraf';
+import MessageQueue from './MessageQueue';
 import User from '../classes/utils/User';
 import UserService from './UserService';
 import presets from '../utils/presets';
@@ -8,7 +9,11 @@ import presets from '../utils/presets';
 export default class TelegramController {
   private defaultTimerSettings: any = presets.get('default');
 
-  public constructor(private ctx: ContextMessageUpdate, private userService: UserService) {
+  public constructor(
+    private ctx: ContextMessageUpdate,
+    private userService: UserService,
+    private messageQueue: MessageQueue,
+  ) {
     this.getUser = this.getUser.bind(this);
     this.onGetStatus = this.onGetStatus.bind(this);
     this.onNext = this.onNext.bind(this);
@@ -102,6 +107,6 @@ export default class TelegramController {
   }
 
   private sendMessage(message?: string): void {
-    this.ctx.reply(message).catch();
+    this.messageQueue.push(message);
   }
 }

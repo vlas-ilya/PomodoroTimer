@@ -1,11 +1,16 @@
 // @ts-ignore
 import { ContextMessageUpdate } from 'telegraf';
+import MessageQueue from './MessageQueue';
 import PomodoroTimer from './PomodoroTimer';
 import TelegramController from './TelegramController';
 import UserService from './UserService';
 
 export default class AppContext {
   public static getContext = (): AppContext => AppContext.context;
+
+  public static getMessageQueue(ctx: ContextMessageUpdate) {
+    return new MessageQueue(ctx);
+  }
 
   private static context = new AppContext();
   private userService = new UserService();
@@ -19,7 +24,12 @@ export default class AppContext {
 
   public getTelegramController(ctx: ContextMessageUpdate) {
     if (!this.controllers.has(ctx.message.from.id)) {
-      this.controllers.set(ctx.message.from.id, new TelegramController(ctx, this.getUserService()));
+      const newController = new TelegramController(
+        ctx,
+        this.getUserService(),
+        AppContext.getMessageQueue(ctx),
+      );
+      this.controllers.set(ctx.message.from.id, newController);
     }
     const controller = this.controllers.get(ctx.message.from.id);
     if (!controller) {
