@@ -145,4 +145,42 @@ presets.set('test', {
   },
 });
 
+presets.set('water', {
+  name: 'Water',
+  description: 'Не забывайте пить воду!',
+  tree: {
+    type: 'node',
+    count: '2',
+    items: [
+      {
+        type: 'node',
+        count: '4',
+        items: [
+          {
+            type: 'leaf',
+            timer: '52',
+            label: 'Выпить воды',
+            startTickLabel: '',
+            stopTickLabel: '',
+          },
+          {
+            type: 'leaf',
+            timer: '8',
+            label: 'Выпить воды',
+            startTickLabel: 'Время выпить воды!',
+            stopTickLabel: 'Вы не забыли выпить воды? Если забыли, то выпейте сейчас!',
+          },
+        ]
+      },
+      {
+        type: 'leaf',
+        timer: '60',
+        label: 'Выпить воды',
+        startTickLabel: '',
+        stopTickLabel: '',
+      }
+    ]
+  }
+})
+
 export default presets;
